@@ -2,6 +2,7 @@
 <html lang="PT-br">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <title>Vibe_Estilo.com</title>
         <style>
             html {
@@ -88,6 +89,23 @@
                 margin: 0 0 22px;
                 color: rgba(255,255,255,0.85);
                 line-height: 1.6;
+            }
+
+            .account-form {
+                display: grid;
+                gap: 12px;
+                margin-top: 18px;
+                text-align: left;
+            }
+
+            .account-form input {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid rgba(247, 211, 8, 0.8);
+                border-radius: 8px;
+                background: #111;
+                color: #fff;
+                font: inherit;
             }
 
             .account-modal-actions {
@@ -593,6 +611,56 @@
             }
 
             @media (max-width: 520px) {
+                .logo-section {
+                    padding: 28px 14px;
+                }
+
+                .logo-box {
+                    padding: 12px;
+                }
+
+                .LINK {
+                    padding: 12px 10px;
+                    gap: 8px;
+                }
+
+                .LINK a {
+                    flex: 1 1 calc(50% - 8px);
+                    min-width: 0;
+                    padding: 11px 8px;
+                    font-size: 0.82rem;
+                }
+
+                section,
+                #intro,
+                #secoes,
+                #produtos,
+                .produto-secao,
+                #contacto,
+                #compra {
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+
+                .produtos-grid {
+                    grid-template-columns: 1fr;
+                    gap: 18px;
+                }
+
+                .produto-item img {
+                    height: auto;
+                    max-height: 260px;
+                }
+
+                .contacto-content {
+                    padding: 24px 16px;
+                }
+
+                .pedido-confirmar {
+                    transform: none;
+                    font-size: 1rem;
+                }
+
                 .produto-carrossel {
                     grid-template-columns: 1fr;
                 }
@@ -883,6 +951,21 @@
             </div>
         </div>
 
+        <div id="registerModal" class="account-modal hidden" role="dialog" aria-modal="true" aria-labelledby="registerModalTitle">
+            <div class="account-modal-card">
+                <h2 id="registerModalTitle">Criar conta</h2>
+                <form id="registerForm" class="account-form">
+                    <input id="registerName" type="text" placeholder="Nome" autocomplete="name" required>
+                    <input id="registerEmail" type="email" placeholder="E-mail" autocomplete="email" required>
+                    <input id="registerPassword" type="password" placeholder="Palavra-passe" autocomplete="new-password" minlength="6" required>
+                    <div class="account-modal-actions">
+                        <button class="account-btn primary" type="submit">Criar conta</button>
+                        <button class="account-btn secondary" id="cancelRegisterBtn" type="button">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div id="pedidoModal" class="account-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pedidoModalTitle">
             <div id="pedidoModalCard" class="pedido-modal-card">
                 <h2 id="pedidoModalTitle">Confirmar pedido</h2>
@@ -1035,9 +1118,9 @@
             <div class="contacto-content">
                 <h1>contacto</h1>
                 <div class="contacto-info">
-                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/244955340922" target="_blank">+244 955 340 922</a></p>
-                    <p><strong>Facebook:</strong> <a href="https://web.facebook.com/profile.php?id=61593798821268" target="_blank">Vibe Estilo Online</a></p>
-                    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/vibe_estilo_online/" target="_blank">@vibe_estilo_online</a></p>
+                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/244955340922" target="_blank" rel="noopener noreferrer">+244 955 340 922</a></p>
+                    <p><strong>Facebook:</strong> <a href="https://web.facebook.com/profile.php?id=61593798821268" target="_blank" rel="noopener noreferrer">Vibe Estilo Online</a></p>
+                    <p><strong>Instagram:</strong> <a href="https://www.instagram.com/vibe_estilo_online/" target="_blank" rel="noopener noreferrer">@vibe_estilo_online</a></p>
                 </div>
             </div>
         </section>
@@ -1192,6 +1275,9 @@
             const accountModal = document.getElementById('accountModal');
             const createAccountBtn = document.getElementById('createAccountBtn');
             const closeAccountBtn = document.getElementById('closeAccountBtn');
+            const registerModal = document.getElementById('registerModal');
+            const registerForm = document.getElementById('registerForm');
+            const cancelRegisterBtn = document.getElementById('cancelRegisterBtn');
 
             setTimeout(() => {
                 if (accountModal) {
@@ -1200,13 +1286,36 @@
             }, 10000);
 
             createAccountBtn?.addEventListener('click', () => {
-                window.location.href = 'index.html';
+                accountModal?.classList.add('hidden');
+                registerModal?.classList.remove('hidden');
+                document.getElementById('registerName')?.focus();
             });
 
             closeAccountBtn?.addEventListener('click', () => {
                 if (accountModal) {
                     accountModal.classList.add('hidden');
                 }
+            });
+
+            cancelRegisterBtn?.addEventListener('click', () => {
+                registerModal?.classList.add('hidden');
+            });
+
+            registerModal?.addEventListener('click', event => {
+                if (event.target === registerModal) {
+                    registerModal.classList.add('hidden');
+                }
+            });
+
+            registerForm?.addEventListener('submit', event => {
+                event.preventDefault();
+                const nome = document.getElementById('registerName').value.trim();
+                localStorage.setItem('vibeEstiloConta', JSON.stringify({
+                    nome,
+                    email: document.getElementById('registerEmail').value.trim()
+                }));
+                registerModal.classList.add('hidden');
+                alert(`Conta criada com sucesso, ${nome}!`);
             });
 
             function enviarWhatsApp() {
